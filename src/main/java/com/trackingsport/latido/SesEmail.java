@@ -12,7 +12,9 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.simpleemail.AmazonSimpleEmailServiceClient;
 import com.amazonaws.services.simpleemail.model.*;
+import com.trackingsport.latido.utils.Configuracion;
 import com.trackingsport.latido.utils.Constantes;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +23,11 @@ import java.util.List;
  */
 public class SesEmail {
 
-  public SendEmailResult enviarMailingClient( List<String> emails,String evento,String mensaje,String asunto ) {
+  public static SesEmail getInstance() {
+    return Singleton.instancia;
+  }
+
+  public SendEmailResult enviarMailingClient( List<String> emails,String mensaje,String asunto ) {
     // Fijamos las credenciales de acceso al API de AmazonAWS
     System.out.println( "PostAwsSES.enviarMailingClient | Awskey [" + Constantes.AWS_KEY + "]" );
     BasicAWSCredentials credenciales = new BasicAWSCredentials( Constantes.AWS_KEY,Constantes.AWS_SECRET );
@@ -61,4 +67,25 @@ public class SesEmail {
     return null;
   }
 
+  public void sendFalloConfiguracion() {
+    String asunto = "ERROR configuración Latido";
+    String mensaje = "ERROR:\n" + Configuracion.getError();
+    SendEmailResult res = enviarMailingClient( Configuracion.getEmails(),mensaje,asunto );
+    System.out.println( "sendFalloConfiguracion | Amazon SES, res-" + res.getMessageId() );
+  }
+
+  public void sendErrores( ArrayList<String> errores ) {
+    String asunto = "ERROR Latido acceso Servicios";
+    StringBuilder sb = new StringBuilder();
+    sb.append( "Error en el acceso a los Servicios TrackingSport:\n\n" );
+    for( String error: errores ) {
+      sb.append( error ).append( "\n" );
+    }
+    SendEmailResult res = enviarMailingClient( Configuracion.getEmails(),sb.toString(),asunto );
+    System.out.println( "sendErrores | Amazon SES, res-" + res.getMessageId() );
+  }
+
+  private static final class Singleton {
+    public static final SesEmail instancia = new SesEmail();
+  }
 }
