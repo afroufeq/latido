@@ -5,6 +5,8 @@
  */
 package com.trackingsport.latido;
 
+import org.apache.log4j.Logger;
+
 /**
  * Clase principal del monitor de servicios.
  * El monitor de servicios controla el acceso a los servicios que se configuran en el fichero de configuración
@@ -17,19 +19,35 @@ package com.trackingsport.latido;
  * @author afroufeq
  */
 public class Latido {
+  private final static Logger log = Logger.getLogger( Latido.class );
+  private TimerLatido tl = null;
 
   public Latido() {
   }
 
   private void arrancaChequeo() {
-    TimerLatido tl = new TimerLatido();
+    tl = new TimerLatido();
     tl.setArrancado( true );
     tl.run();
   }
 
+  private void paraChequeo() {
+    tl.setArrancado( false );
+  }
+
   public static void main( String[] args ) {
-    Latido latido = new Latido();
-    latido.arrancaChequeo();
+    log.info( "LATIDO -> Arrancando.." );
+    final Latido latido = new Latido();
+//    latido.arrancaChequeo();
+
+    Runtime.getRuntime().addShutdownHook( new Thread() {
+      @Override
+      public void run() {
+        log.info( "LATIDO -> Deteniendo.." );
+        latido.paraChequeo();
+      }
+    } );
+
   }
 
 }

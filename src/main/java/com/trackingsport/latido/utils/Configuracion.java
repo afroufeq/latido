@@ -7,6 +7,9 @@ package com.trackingsport.latido.utils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import org.apache.log4j.Logger;
 import org.ini4j.Ini;
 
 /**
@@ -14,6 +17,7 @@ import org.ini4j.Ini;
  * @author afroufeq
  */
 public class Configuracion {
+  private final static Logger log = Logger.getLogger( Configuracion.class );
   private static ArrayList<String> servicios = new ArrayList<>();
   private static ArrayList<String> emails = new ArrayList<>();
   private static String error;
@@ -29,9 +33,9 @@ public class Configuracion {
       File configFile = new File( configFileName );
       if( !configFile.exists() ) {
         ret = false;
-        error = "Fichero no existe: "+Constantes.FICHERO_CONFIGURACION;
+        error = "Fichero no existe: " + Constantes.FICHERO_CONFIGURACION;
         // SI no existe, error y salimos
-        System.out.println( "FATAL: no se encuentra el fichero de configuracion " + Constantes.FICHERO_CONFIGURACION );
+        log.warn( "Configuracion | FATAL: no se encuentra el fichero de configuracion " + Constantes.FICHERO_CONFIGURACION );
       }
       ini.load( new FileReader( configFile ) );
       // ------------------------------------------------------ Sección Cliente
@@ -43,11 +47,11 @@ public class Configuracion {
         System.out.println( key + " -> " + ini.get( Constantes.SECCION_2_EMAIL ).fetch( key ) );
         emails.add( ini.get( Constantes.SECCION_2_EMAIL ).fetch( key ) );
       }
-      System.out.println( "Cargado el fichero de configuración." );
+      log.debug( "Configuracion | Cargado el fichero de configuración." );
     }catch( IOException e ) {
       ret = false;
-      error = "EX-Procesando configuración: "+e.getMessage();
-      System.out.println( "FATAL: Fallo procesando fichero configuración: " + e.getMessage() );
+      error = "EX-Procesando configuración: " + e.getMessage();
+      log.warn( "Configuracion | FATAL: Fallo procesando fichero configuración: " + e.getMessage() );
     }
     return ret;
   }
@@ -122,176 +126,186 @@ public class Configuracion {
       case 308:
         sb.append( "Permanent Redirect" );
         break;
-      case 400 :
+      case 400:
         sb.append( "Bad Request" );
         break;
-      case 401 :
+      case 401:
         sb.append( "Unauthorized" );
         break;
-      case 402 :
+      case 402:
         sb.append( "Payment Required" );
         break;
-      case 403 :
+      case 403:
         sb.append( "Forbidden" );
         break;
-      case 404 :
+      case 404:
         sb.append( "Not Found" );
         break;
-      case 405 :
+      case 405:
         sb.append( "Method Not Allowed" );
         break;
-      case 406 :
+      case 406:
         sb.append( "Not Acceptable" );
         break;
-      case 407 :
+      case 407:
         sb.append( "Proxy Authentication Required" );
         break;
-      case 408 :
+      case 408:
         sb.append( "Request Timeout" );
         break;
-      case 409 :
+      case 409:
         sb.append( "Conflict" );
         break;
-      case 410 :
+      case 410:
         sb.append( "Gone" );
         break;
-      case 411 :
+      case 411:
         sb.append( "Length Required" );
         break;
-      case 412 :
+      case 412:
         sb.append( "ContiPrecondition Failednue" );
         break;
-      case 413 :
+      case 413:
         sb.append( "Payload Too Large" );
         break;
-      case 414 :
+      case 414:
         sb.append( "ConRequest-URI Too Longtinue" );
         break;
-      case 415 :
+      case 415:
         sb.append( "ContinUnsupported Media Typeue" );
         break;
-      case 416 :
+      case 416:
         sb.append( "Requested Range Not Satisfiable" );
         break;
-      case 417 :
+      case 417:
         sb.append( "Expectation Failed" );
         break;
-      case 418 :
+      case 418:
         sb.append( "I'm a teapot" );
         break;
-      case 419 :
+      case 419:
         sb.append( "Authentication Timeout" );
         break;
-      case 420 :
+      case 420:
         sb.append( "Method Failure" );
         break;
-      case 421 :
+      case 421:
         sb.append( "Misdirected Request" );
         break;
-      case 422 :
+      case 422:
         sb.append( "Unprocessable Entity" );
         break;
-      case 423 :
+      case 423:
         sb.append( "Locked" );
         break;
-      case 424 :
+      case 424:
         sb.append( "Failed Dependency" );
         break;
-      case 426 :
+      case 426:
         sb.append( "ContiUpgrade Requirednue" );
         break;
-      case 428 :
+      case 428:
         sb.append( "Precondition Required" );
         break;
-      case 429 :
+      case 429:
         sb.append( "Too Many Requests" );
         break;
-      case 431 :
+      case 431:
         sb.append( "Request Header Fields Too Large" );
         break;
-      case 440 :
+      case 440:
         sb.append( "Login Timeout" );
         break;
-      case 444 :
+      case 444:
         sb.append( "No Response" );
         break;
-      case 449 :
+      case 449:
         sb.append( "Retry With" );
         break;
-      case 450 :
+      case 450:
         sb.append( "Blocked by Windows Parental Controls" );
         break;
-      case 451 :
+      case 451:
         sb.append( "Redirect" );
         break;
-      case 494 :
+      case 494:
         sb.append( "Request Header Too Large" );
         break;
-      case 495 :
+      case 495:
         sb.append( "Cert Error" );
         break;
-      case 496 :
+      case 496:
         sb.append( "No Cert" );
         break;
-      case 497 :
+      case 497:
         sb.append( "HTTP to HTTPS" );
         break;
-      case 498 :
+      case 498:
         sb.append( "Token expired/invalid" );
         break;
-      case 499 :
+      case 499:
         sb.append( "Client Closed Request" );
         break;
-      case 500 :
+      case 500:
         sb.append( "Internal Server Error" );
         break;
-      case 501 :
+      case 501:
         sb.append( "Not Implemented" );
         break;
-      case 502 :
+      case 502:
         sb.append( "Bad Gateway" );
         break;
-      case 503 :
+      case 503:
         sb.append( "Service Unavailable" );
         break;
-      case 504 :
+      case 504:
         sb.append( "Gateway Timeout" );
         break;
-      case 505 :
+      case 505:
         sb.append( "HTTP Version Not Supported" );
         break;
-      case 506 :
+      case 506:
         sb.append( "Variant Also Negotiates" );
         break;
-      case 507 :
+      case 507:
         sb.append( "Insufficient Storage" );
         break;
-      case 508 :
+      case 508:
         sb.append( "Loop Detected" );
         break;
-      case 509 :
+      case 509:
         sb.append( "Bandwidth Limit Exceeded" );
         break;
-      case 510 :
+      case 510:
         sb.append( "Not Extended" );
         break;
-      case 511 :
+      case 511:
         sb.append( "Network Authentication Required" );
         break;
-      case 520 :
+      case 520:
         sb.append( "Unknown Error" );
         break;
-      case 522 :
+      case 522:
         sb.append( "Origin Connection Time-out" );
         break;
-      case 598 :
+      case 598:
         sb.append( "Network read timeout error" );
         break;
-      case 599 :
+      case 599:
         sb.append( "Network connect timeout error" );
         break;
     }
     return sb.toString();
+  }
+
+  public static String getFecha() {
+    String salida;
+    Calendar cal = Calendar.getInstance();
+    cal.setTime( new Date() );
+    salida = String.format( "%02d/%02d/%4d %02d:%02d:%02d",
+      cal.get( Calendar.DAY_OF_MONTH ),cal.get( Calendar.MONTH ) + 1,cal.get( Calendar.YEAR ),
+      cal.get( Calendar.HOUR_OF_DAY ),cal.get( Calendar.MINUTE ),cal.get( Calendar.SECOND ) );
+    return salida;
   }
 
   public static String getError() {

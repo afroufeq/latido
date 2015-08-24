@@ -16,12 +16,14 @@ import com.trackingsport.latido.utils.Configuracion;
 import com.trackingsport.latido.utils.Constantes;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.log4j.Logger;
 
 /**
  *
  * @author afroufeq
  */
 public class SesEmail {
+  private final Logger log = Logger.getLogger( this.getClass() );
 
   public static SesEmail getInstance() {
     return Singleton.instancia;
@@ -29,7 +31,7 @@ public class SesEmail {
 
   public SendEmailResult enviarMailingClient( List<String> emails,String mensaje,String asunto ) {
     // Fijamos las credenciales de acceso al API de AmazonAWS
-    System.out.println( "PostAwsSES.enviarMailingClient | Awskey [" + Constantes.AWS_KEY + "]" );
+    log.debug( "SesEmail.enviarMailingClient | Awskey [" + Constantes.AWS_KEY + "]" );
     BasicAWSCredentials credenciales = new BasicAWSCredentials( Constantes.AWS_KEY,Constantes.AWS_SECRET );
     Region regionAws = Region.getRegion( Regions.EU_WEST_1 );
     // Creamos la petición de email pasando directamente quién es el origen
@@ -62,7 +64,7 @@ public class SesEmail {
       // Llamamos a Amazon SES y enviamos el mensaje
       return ( client.sendEmail( sesrequest ) );
     }catch( AmazonClientException e ) {
-      System.out.println( "PostAwsSES.enviarMailingClient | Amazon SES, EX-" + e.getMessage() );
+      log.warn( "SesEmail.enviarMailingClient | Amazon SES, EX-" + e.getMessage() );
     }
     return null;
   }
@@ -71,18 +73,18 @@ public class SesEmail {
     String asunto = "ERROR configuración Latido";
     String mensaje = "ERROR:\n" + Configuracion.getError();
     SendEmailResult res = enviarMailingClient( Configuracion.getEmails(),mensaje,asunto );
-    System.out.println( "sendFalloConfiguracion | Amazon SES, res-" + res.getMessageId() );
+    log.info( "SesMail.sendFalloConfiguracion | Amazon SES, res-" + res.getMessageId() );
   }
 
   public void sendErrores( ArrayList<String> errores ) {
-    String asunto = "ERROR Latido acceso Servicios";
+    String asunto = "ERROR Latido acceso Servicios ["+Configuracion.getFecha()+"]";
     StringBuilder sb = new StringBuilder();
-    sb.append( "Error en el acceso a los Servicios TrackingSport:\n\n" );
+    sb.append( "Error en el acceso a los Servicios TrackingSport:<br><br>" );
     for( String error: errores ) {
-      sb.append( error ).append( "\n" );
+      sb.append( error ).append( "<br>" );
     }
     SendEmailResult res = enviarMailingClient( Configuracion.getEmails(),sb.toString(),asunto );
-    System.out.println( "sendErrores | Amazon SES, res-" + res.getMessageId() );
+   log.info( "SesEmail.sendErrores | Amazon SES, res-" + res.getMessageId() );
   }
 
   private static final class Singleton {
