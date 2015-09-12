@@ -27,7 +27,6 @@ public class Configuracion {
     error = null;
     Ini ini = new Ini();
     try {
-//      String configFileName = System.getProperty( "user.dir" ) + "/" + Constantes.FICHERO_CONFIGURACION;
       String configFileName = Constantes.PATH_CONFIGURACION + "/" + Constantes.FICHERO_CONFIGURACION;
       // Comprobamos si existe el fichero de configuración en el mismo directorio en que estamos lanzando el cliente
       File configFile = new File( configFileName );
@@ -40,11 +39,11 @@ public class Configuracion {
       ini.load( new FileReader( configFile ) );
       // ------------------------------------------------------ Sección Cliente
       for( String key: ini.get( Constantes.SECCION_1_SERVICIO ).keySet() ) {
-        System.out.println( key + " -> " + ini.get( Constantes.SECCION_1_SERVICIO ).fetch( key ) );
+        log.debug( key + " -> " + ini.get( Constantes.SECCION_1_SERVICIO ).fetch( key ) );
         servicios.add( ini.get( Constantes.SECCION_1_SERVICIO ).fetch( key ) );
       }
       for( String key: ini.get( Constantes.SECCION_2_EMAIL ).keySet() ) {
-        System.out.println( key + " -> " + ini.get( Constantes.SECCION_2_EMAIL ).fetch( key ) );
+        log.debug( key + " -> " + ini.get( Constantes.SECCION_2_EMAIL ).fetch( key ) );
         emails.add( ini.get( Constantes.SECCION_2_EMAIL ).fetch( key ) );
       }
       log.debug( "Configuracion | Cargado el fichero de configuración." );

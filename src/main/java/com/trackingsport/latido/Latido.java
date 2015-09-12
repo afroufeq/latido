@@ -38,7 +38,7 @@ public class Latido {
   public static void main( String[] args ) {
     log.info( "LATIDO -> Arrancando.." );
     final Latido latido = new Latido();
-//    latido.arrancaChequeo();
+    latido.arrancaChequeo();
 
     Runtime.getRuntime().addShutdownHook( new Thread() {
       @Override

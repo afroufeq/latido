@@ -50,9 +50,10 @@ public class TimerLatido extends Thread {
       }
       // Congelamos el timer el tiempo que se fije en el intervalo 
       try {
+        log.debug( "TimeLatido | Proxima Ejecucion "+Configuracion.getFecha() );
         Thread.sleep( Constantes.INTERVALO_CHECK );
       }catch( InterruptedException ie ) {
-        System.out.println( "EX -> " + ie.getMessage() );
+        log.warn( "EX -> " + ie.getMessage() );
         continue;
       }
     }
@@ -103,7 +104,7 @@ public class TimerLatido extends Thread {
       connection.setRequestMethod( "HEAD" );
       responseCode = connection.getResponseCode();
       if( 200 <= responseCode && responseCode <= 399 ) {
-        System.out.println( "OK [" + url + "] " + Configuracion.codeStr( responseCode ) );
+        log.debug( "OK [" + url + "] " + Configuracion.codeStr( responseCode ) );
       }
       else {
         ret = false;
