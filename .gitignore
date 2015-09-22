@@ -1,1 +1,7 @@
-/target/
+target/
+nbproject/private/
+nbactions.xml
+nb-configuration.xml
+build/
+hs_err_pid*.log
+
