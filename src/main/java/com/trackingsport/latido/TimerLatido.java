@@ -21,7 +21,7 @@ public class TimerLatido extends Thread {
   private final Logger log = Logger.getLogger( this.getClass() );
   private boolean arrancado = false;
   private int responseCode;
-  private ArrayList<String> errores;
+  private final ArrayList<String> errores;
 
   public TimerLatido() {
     errores = new ArrayList<>();
@@ -38,7 +38,7 @@ public class TimerLatido extends Thread {
         // Lo cargamos cada una de las veces que se lanza el latido, porque eso nos permite actualizar el
         // fichero en caso de que se cambien las IPs de las instancias en donde corren los servicios
         if( cargaConfiguracion() ) {
-          log.info( "TimeLatido | Ejecucion "+Configuracion.getFecha() );
+          log.info( "TimeLatido | ------>>>>>> Ejecucion " + Configuracion.getFecha() );
           // borramos todos los mensajes de error que hubiesen podido generarse en la anterior ejecución
           errores.clear();
           // Comprobamos los servicios
@@ -50,7 +50,7 @@ public class TimerLatido extends Thread {
       }
       // Congelamos el timer el tiempo que se fije en el intervalo 
       try {
-        log.debug( "TimeLatido | Proxima Ejecucion "+Configuracion.getFecha() );
+        log.debug( "TimeLatido | <<<<<<<------ Fin Ejecucion " + Configuracion.getFecha() );
         Thread.sleep( Constantes.INTERVALO_CHECK );
       }catch( InterruptedException ie ) {
         log.warn( "EX -> " + ie.getMessage() );
@@ -92,27 +92,29 @@ public class TimerLatido extends Thread {
     return ret;
   }
 
-  private boolean ping( String url ) {
+  private boolean ping( String servicio ) {
     boolean ret = true;
+    String datos[] = servicio.split( "#" );
     // Se puede lanzar una excepción si los certificados SSL no son válidos
 //    url = url.replaceFirst( "^https","http" );
     try {
-      HttpURLConnection connection = (HttpURLConnection)new URL( url ).openConnection();
+      HttpURLConnection connection = (HttpURLConnection)new URL( datos[1] ).openConnection();
       // Fijamos el tiempo en que esperamos la respuesta antes de considerar un fallo
       connection.setConnectTimeout( Constantes.TIMEOUT );
       connection.setReadTimeout( Constantes.TIMEOUT );
       connection.setRequestMethod( "HEAD" );
       responseCode = connection.getResponseCode();
       if( 200 <= responseCode && responseCode <= 399 ) {
-        log.debug( "OK [" + url + "] " + Configuracion.codeStr( responseCode ) );
+        log.debug( "OK [" + servicio + "] " + Configuracion.codeStr( responseCode ) );
       }
       else {
         ret = false;
-        errores.add( Configuracion.codeStr( responseCode ) + ", " + url );
+        errores.add( Configuracion.getFecha() + " - [" + datos[0] + "] "
+          + Configuracion.codeStr( responseCode ) + ", " + datos[1] );
       }
     }catch( IOException e ) {
       ret = false;
-      errores.add( "EX-" + e.getMessage() + " [" + url + "]" );
+      errores.add( "EX-" + e.getMessage() + " [" + servicio + "]" );
     }
     return ret;
   }

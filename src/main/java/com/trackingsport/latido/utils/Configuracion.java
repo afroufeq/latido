@@ -18,8 +18,8 @@ import org.ini4j.Ini;
  */
 public class Configuracion {
   private final static Logger log = Logger.getLogger( Configuracion.class );
-  private static ArrayList<String> servicios = new ArrayList<>();
-  private static ArrayList<String> emails = new ArrayList<>();
+  private static final ArrayList<String> servicios = new ArrayList<>();
+  private static final ArrayList<String> emails = new ArrayList<>();
   private static String error;
 
   public static boolean readConfig() {
@@ -38,10 +38,12 @@ public class Configuracion {
       }
       ini.load( new FileReader( configFile ) );
       // ------------------------------------------------------ Sección Cliente
+      servicios.clear();
       for( String key: ini.get( Constantes.SECCION_1_SERVICIO ).keySet() ) {
         log.debug( key + " -> " + ini.get( Constantes.SECCION_1_SERVICIO ).fetch( key ) );
-        servicios.add( ini.get( Constantes.SECCION_1_SERVICIO ).fetch( key ) );
+        servicios.add( key + "#" + ini.get( Constantes.SECCION_1_SERVICIO ).fetch( key ) );
       }
+      emails.clear();
       for( String key: ini.get( Constantes.SECCION_2_EMAIL ).keySet() ) {
         log.debug( key + " -> " + ini.get( Constantes.SECCION_2_EMAIL ).fetch( key ) );
         emails.add( ini.get( Constantes.SECCION_2_EMAIL ).fetch( key ) );

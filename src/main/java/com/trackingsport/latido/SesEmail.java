@@ -77,14 +77,15 @@ public class SesEmail {
   }
 
   public void sendErrores( ArrayList<String> errores ) {
-    String asunto = "ERROR Latido acceso Servicios ["+Configuracion.getFecha()+"]";
+    String asunto = "ERROR Latido acceso Servicios [" + Configuracion.getFecha() + "]";
     StringBuilder sb = new StringBuilder();
     sb.append( "Error en el acceso a los Servicios TrackingSport:<br><br>" );
     for( String error: errores ) {
       sb.append( error ).append( "<br>" );
     }
     SendEmailResult res = enviarMailingClient( Configuracion.getEmails(),sb.toString(),asunto );
-   log.info( "SesEmail.sendErrores | Amazon SES, res-" + res.getMessageId() );
+//   log.info( "SesEmail.sendErrores | Amazon SES, res-" + res.getMessageId() );
+    log.info( "SesEmail.sendErrores | Amazon SES, res-" + sb.toString() );
   }
 
   private static final class Singleton {
