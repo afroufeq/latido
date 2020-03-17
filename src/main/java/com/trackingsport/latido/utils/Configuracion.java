@@ -5,11 +5,13 @@
  */
 package com.trackingsport.latido.utils;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 import org.ini4j.Ini;
 
 /**
@@ -17,7 +19,7 @@ import org.ini4j.Ini;
  * @author afroufeq
  */
 public class Configuracion {
-  private final static Logger log = Logger.getLogger( Configuracion.class );
+  private final static Logger log = Logger.getLogger( Configuracion.class.getName() );
   private static final ArrayList<String> servicios = new ArrayList<>();
   private static final ArrayList<String> emails = new ArrayList<>();
   private static String error;
@@ -34,25 +36,25 @@ public class Configuracion {
         ret = false;
         error = "Fichero no existe: " + Constantes.FICHERO_CONFIGURACION;
         // SI no existe, error y salimos
-        log.warn( "Configuracion | FATAL: no se encuentra el fichero de configuracion " + Constantes.FICHERO_CONFIGURACION );
+        log.warning( "Configuracion | FATAL: no se encuentra el fichero de configuracion " + Constantes.FICHERO_CONFIGURACION );
       }
       ini.load( new FileReader( configFile ) );
       // ------------------------------------------------------ Sección Cliente
       servicios.clear();
       for( String key: ini.get( Constantes.SECCION_1_SERVICIO ).keySet() ) {
-        log.debug( key + " -> " + ini.get( Constantes.SECCION_1_SERVICIO ).fetch( key ) );
+        log.fine( key + " -> " + ini.get( Constantes.SECCION_1_SERVICIO ).fetch( key ) );
         servicios.add( key + "#" + ini.get( Constantes.SECCION_1_SERVICIO ).fetch( key ) );
       }
       emails.clear();
       for( String key: ini.get( Constantes.SECCION_2_EMAIL ).keySet() ) {
-        log.debug( key + " -> " + ini.get( Constantes.SECCION_2_EMAIL ).fetch( key ) );
+        log.fine( key + " -> " + ini.get( Constantes.SECCION_2_EMAIL ).fetch( key ) );
         emails.add( ini.get( Constantes.SECCION_2_EMAIL ).fetch( key ) );
       }
-      log.debug( "Configuracion | Cargado el fichero de configuración." );
+      log.fine( "Configuracion | Cargado el fichero de configuración." );
     }catch( IOException e ) {
       ret = false;
       error = "EX-Procesando configuración: " + e.getMessage();
-      log.warn( "Configuracion | FATAL: Fallo procesando fichero configuración: " + e.getMessage() );
+      log.warning( "Configuracion | FATAL: Fallo procesando fichero configuración: " + e.getMessage() );
     }
     return ret;
   }

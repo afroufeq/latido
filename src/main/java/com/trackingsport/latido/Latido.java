@@ -5,7 +5,8 @@
  */
 package com.trackingsport.latido;
 
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
+
 
 /**
  * Clase principal del monitor de servicios.
@@ -19,7 +20,7 @@ import org.apache.log4j.Logger;
  * @author afroufeq
  */
 public class Latido {
-  private final static Logger log = Logger.getLogger( Latido.class );
+  private final static Logger log = Logger.getLogger( Latido.class.getName() );
   private TimerLatido tl = null;
 
   public Latido() {

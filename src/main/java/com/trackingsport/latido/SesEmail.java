@@ -16,14 +16,14 @@ import com.trackingsport.latido.utils.Configuracion;
 import com.trackingsport.latido.utils.Constantes;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  *
  * @author afroufeq
  */
 public class SesEmail {
-  private final Logger log = Logger.getLogger( this.getClass() );
+  private final Logger log = Logger.getLogger( this.getClass().getName() );
 
   public static SesEmail getInstance() {
     return Singleton.instancia;
@@ -31,7 +31,7 @@ public class SesEmail {
 
   public SendEmailResult enviarMailingClient( List<String> emails,String mensaje,String asunto ) {
     // Fijamos las credenciales de acceso al API de AmazonAWS
-    log.debug( "SesEmail.enviarMailingClient | Awskey [" + Constantes.AWS_KEY + "]" );
+    log.fine( "SesEmail.enviarMailingClient | Awskey [" + Constantes.AWS_KEY + "]" );
     BasicAWSCredentials credenciales = new BasicAWSCredentials( Constantes.AWS_KEY,Constantes.AWS_SECRET );
     Region regionAws = Region.getRegion( Regions.EU_WEST_1 );
     // Creamos la petición de email pasando directamente quién es el origen
@@ -64,7 +64,7 @@ public class SesEmail {
       // Llamamos a Amazon SES y enviamos el mensaje
       return ( client.sendEmail( sesrequest ) );
     }catch( AmazonClientException e ) {
-      log.warn( "SesEmail.enviarMailingClient | Amazon SES, EX-" + e.getMessage() );
+      log.warning( "SesEmail.enviarMailingClient | Amazon SES, EX-" + e.getMessage() );
     }
     return null;
   }

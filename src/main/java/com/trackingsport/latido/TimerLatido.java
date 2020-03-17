@@ -11,14 +11,14 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
-import org.apache.log4j.Logger;
+import java.util.logging.Logger;
 
 /**
  * @author afroufeq
  *
  */
 public class TimerLatido extends Thread {
-  private final Logger log = Logger.getLogger( this.getClass() );
+  private final Logger log = Logger.getLogger( this.getClass().getName() );
   private boolean arrancado = false;
   private int responseCode;
   private final ArrayList<String> errores;
@@ -30,7 +30,7 @@ public class TimerLatido extends Thread {
   @Override
   @SuppressWarnings( "SleepWhileInLoop" )
   public void run() {
-    log.debug( "TimerLatido -> enumerate[" + Thread.getAllStackTraces().size() + "]" );
+    log.fine( "TimerLatido -> enumerate[" + Thread.getAllStackTraces().size() + "]" );
     while( arrancado ) {
       // Usamos synchronized para evitar conflictos
       synchronized( this ) {
@@ -50,10 +50,10 @@ public class TimerLatido extends Thread {
       }
       // Congelamos el timer el tiempo que se fije en el intervalo 
       try {
-        log.debug( "TimeLatido | <<<<<<<------ Fin Ejecucion " + Configuracion.getFecha() );
+        log.fine( "TimeLatido | <<<<<<<------ Fin Ejecucion " + Configuracion.getFecha() );
         Thread.sleep( Constantes.INTERVALO_CHECK );
       }catch( InterruptedException ie ) {
-        log.warn( "EX -> " + ie.getMessage() );
+        log.warning( "EX -> " + ie.getMessage() );
         continue;
       }
     }
@@ -62,7 +62,7 @@ public class TimerLatido extends Thread {
   private void compruebaServicios() {
     // Comprobamos cada uno de los servicios de forma individual
     for( String servicio: Configuracion.getServicios() ) {
-      log.debug( "TimerLatido.compruebaServicios | Comprobando -> " + servicio );
+      log.fine( "TimerLatido.compruebaServicios | Comprobando -> " + servicio );
       if( !ping( servicio ) ) {
         log.info( "TimerLatido.compruebaServicios | Error[" + responseCode + "]-> " + servicio );
       }
@@ -77,14 +77,14 @@ public class TimerLatido extends Thread {
     // Lo primero de todo es cargar la configuración, leyendo el fichero ini con los datos de las URL de los
     // servicios y los correos electrónicos de aviso de problemas
     if( Configuracion.readConfig() ) {
-      log.debug( "Procesado el fichero de configuracion" );
-      log.debug( "Servicios --- " );
+      log.fine( "Procesado el fichero de configuracion" );
+      log.fine( "Servicios --- " );
       for( String servicio: Configuracion.getServicios() ) {
-        log.debug( "-> " + servicio );
+        log.fine( "-> " + servicio );
       }
-      log.debug( "Emails --- " );
+      log.fine( "Emails --- " );
       for( String email: Configuracion.getEmails() ) {
-        log.debug( "-> " + email );
+        log.fine( "-> " + email );
       }
       ret = true;
     }
@@ -105,7 +105,7 @@ public class TimerLatido extends Thread {
       connection.setRequestMethod( "HEAD" );
       responseCode = connection.getResponseCode();
       if( 200 <= responseCode && responseCode <= 399 ) {
-        log.debug( "OK [" + servicio + "] " + Configuracion.codeStr( responseCode ) );
+        log.fine( "OK [" + servicio + "] " + Configuracion.codeStr( responseCode ) );
       }
       else {
         ret = false;
